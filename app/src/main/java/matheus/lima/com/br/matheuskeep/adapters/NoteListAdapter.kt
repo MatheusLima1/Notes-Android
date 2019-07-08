@@ -25,13 +25,12 @@ class NoteListAdapter(private val notes:List<Notes>,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val note = notes[position]
 
-        holder?.let {
+        holder.let {
             it.title.text = note.title
             it.description.text = note.description
         }
 
     }
-
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title = itemView.note_item_title
