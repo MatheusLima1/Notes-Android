@@ -2,9 +2,7 @@ package matheus.lima.com.br.matheuskeep.rest.service
 
 import matheus.lima.com.br.matheuskeep.entity.Notes
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface NoteService {
 
@@ -13,4 +11,7 @@ interface NoteService {
 
     @POST("notes")
     fun insert(@Body note: Notes) : Call<Notes>
+
+    @PUT("notes/{id}")
+    fun alter(@Body note: Notes, @Path("id") id: Int) : Call<Notes>
 }
