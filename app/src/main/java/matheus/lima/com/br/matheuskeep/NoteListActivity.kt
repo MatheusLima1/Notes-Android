@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_note_list.*
 import matheus.lima.com.br.matheuskeep.adapters.NoteListAdapter
-import matheus.lima.com.br.matheuskeep.dialog.AddNoteDialog
+import matheus.lima.com.br.matheuskeep.dialog.NoteDialog
 import matheus.lima.com.br.matheuskeep.entity.Notes
 import matheus.lima.com.br.matheuskeep.rest.webclient.NoteWebClient
 
@@ -26,9 +26,9 @@ class NoteListActivity : AppCompatActivity() {
         })
 
         fab_add_note.setOnClickListener{
-            AddNoteDialog(this,
+            NoteDialog(this,
                     window.decorView as ViewGroup)
-                    .show {
+                    .add {
                         notes.add(it)
                         configureList()
                     }
@@ -37,7 +37,12 @@ class NoteListActivity : AppCompatActivity() {
 
     private fun configureList() {
         val recyclerView = note_list_recyclerview
-        recyclerView.adapter = NoteListAdapter(notes, this)
+        recyclerView.adapter = NoteListAdapter(notes, this) { note, position ->
+            NoteDialog(this,window.decorView as ViewGroup).alter(note){
+                notes[position] = it
+                configureList()
+            }
+        }
         val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         recyclerView.layoutManager = layoutManager
     }
