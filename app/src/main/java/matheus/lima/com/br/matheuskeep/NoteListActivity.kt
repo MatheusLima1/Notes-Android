@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_note_list.*
 import matheus.lima.com.br.matheuskeep.adapters.NoteListAdapter
@@ -28,7 +29,11 @@ class NoteListActivity : AppCompatActivity() {
         fab_add_note.setOnClickListener{
             NoteDialog(this,
                     window.decorView as ViewGroup)
-                    .add {
+                    .add ({
+                        note_list_progress.visibility = ProgressBar.VISIBLE
+                    },{
+                        note_list_progress.visibility = ProgressBar.GONE
+                    }){
                         notes.add(it)
                         configureList()
                     }

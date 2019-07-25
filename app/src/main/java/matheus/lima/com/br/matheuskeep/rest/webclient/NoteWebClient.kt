@@ -21,15 +21,19 @@ class NoteWebClient {
         }))
     }
 
-    fun insert(note: Notes, sucess: (note: Notes) -> Unit,
+    fun insert(note: Notes, finished:() -> Unit,sucess: (note: Notes) -> Unit,
                failure: (throwable: Throwable) -> Unit) {
         val call = RetrofitInicializr().noteService().insert(note)
         call.enqueue(callback({ response ->
             response?.body()?.let {
                 sucess(it)
+                finished()
             }
         }, { throwable ->
-            throwable?.let { (failure(it)) }
+            throwable?.let {
+                failure(it)
+                finished()
+            }
         }))
     }
 

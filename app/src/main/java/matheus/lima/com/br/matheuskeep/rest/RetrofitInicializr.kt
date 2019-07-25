@@ -13,7 +13,7 @@ class RetrofitInicializr {
         .build()
 
     private val retrofit =     Retrofit.Builder()
-            .baseUrl("http://192.168.0.84:8080")
+            .baseUrl("http://192.168.0.31:8080")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
