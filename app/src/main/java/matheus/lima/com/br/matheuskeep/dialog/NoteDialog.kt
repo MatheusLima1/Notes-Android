@@ -10,15 +10,21 @@ import matheus.lima.com.br.matheuskeep.R
 import matheus.lima.com.br.matheuskeep.entity.Notes
 import matheus.lima.com.br.matheuskeep.rest.webclient.NoteWebClient
 
-class NoteDialog(private val context: Context,
-                 private val viewGroup: ViewGroup) {
+class NoteDialog(
+    private val context: Context,
+    private val viewGroup: ViewGroup
+) {
 
     val createdView = LayoutInflater.from(context)
         .inflate(R.layout.form_note, viewGroup, false)
     val titleField = createdView.form_note_title
     val descriptionField = createdView.form_note_description
 
-    fun add(preExecute: () -> Unit, finished:() -> Unit, created: (createdNotes: Notes) -> Unit){
+    fun add(
+        preExecute: () -> Unit = {},
+        finished: () -> Unit = {},
+        created: (createdNotes: Notes) -> Unit = {}
+    ) {
 
         AlertDialog.Builder(context)
             .setTitle("Add Note")
@@ -28,28 +34,42 @@ class NoteDialog(private val context: Context,
                 val description = createdView.form_note_description.text.toString()
                 val note = Notes(title = title, description = description)
                 preExecute()
-                NoteWebClient().insert(note,finished, {
-                    created(it)
-                },{
-                    Toast.makeText(context, "Falha ao salvar nota", Toast.LENGTH_LONG).show()
-                })
-            }
-            .show()
+                NoteWebClient().insert(
+                    note,
+                    sucess = { created(it) },
+                    failure = {
+                        Toast.makeText(
+                            context,
+                            "Falha ao salvar nota!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    },
+                    preExecute = preExecute,
+                    finished = finished
+                )
+            }.show()
     }
 
-    fun alter(note: Notes, altered:(alteredNote: Notes) -> Unit){
+    fun alter(
+        note: Notes,
+        preExecute: () -> Unit = {},
+        finished: () -> Unit = {},
+        altered: (alteredNote: Notes) -> Unit
+    ) {
         titleField.setText(note.title)
         descriptionField.setText(note.description)
         AlertDialog.Builder(context)
             .setTitle("Alterar Nota")
             .setView(createdView)
-            .setPositiveButton("Save"){_,_ ->
+            .setPositiveButton("Save") { _, _ ->
                 val title = titleField.text.toString()
                 val description = descriptionField.text.toString()
-                val alteredNote = note.copy(title = title, description =  description)
-                NoteWebClient().alter(alteredNote, {altered(it)},{
-                    Toast.makeText(context, "Falha ao alterar nota",Toast.LENGTH_LONG).show()
-                })
+                val alteredNote = note.copy(title = title, description = description)
+                NoteWebClient().alter(alteredNote, sucess = { altered(it) }, failure = {
+                    Toast.makeText(context, "Falha ao alterar nota", Toast.LENGTH_LONG).show()
+                }, preExecute = preExecute,
+                    finished = finished
+                )
             }
             .show()
     }

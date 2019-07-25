@@ -19,10 +19,10 @@ class NoteListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note_list)
 
-        NoteWebClient().list ({
+        NoteWebClient().list (sucess = {
             notes.addAll(it)
             configureList()
-        },{
+        },failure = {
             Toast.makeText(this, "Falha ao buscar as notas", Toast.LENGTH_LONG).show()
         })
 
