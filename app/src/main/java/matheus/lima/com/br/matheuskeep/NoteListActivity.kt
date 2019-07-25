@@ -29,14 +29,14 @@ class NoteListActivity : AppCompatActivity() {
         fab_add_note.setOnClickListener{
             NoteDialog(this,
                     window.decorView as ViewGroup)
-                    .add ({
+                    .add (preExecute = {
                         note_list_progress.visibility = ProgressBar.VISIBLE
-                    },{
-                        note_list_progress.visibility = ProgressBar.GONE
-                    }){
+                    },created = {
                         notes.add(it)
                         configureList()
-                    }
+                    },finished = {
+                        note_list_progress.visibility = ProgressBar.GONE
+                    })
         }
     }
 
